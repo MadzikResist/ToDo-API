@@ -5,9 +5,16 @@ class NoteActions  {
        const title = req.body.title;
        const text = req.body.text;
        const date = req.body.date;
+       const done = req.body.done;
 
-       const note = new Note({title, text});
-       await note.save();
+       let note;
+       try{
+           note = new Note({title, text, date, done});
+           await note.save();
+       } catch (err) {
+           return res.status(422).json({message: err.message});
+       }
+
 
        res.status(200).json(note);
    }
@@ -21,21 +28,31 @@ class NoteActions  {
        //  } catch(err){
        //     return res.status(500).json({message: err.message});
        //  }
-        const doc = await Note.find({});
+        const doc = await Note.find({}).sort({date:1});
         res.status(201).json(doc);
     }
 
     //aktualizowanie notatki
     async updateNote(req, res) {
         const id = req.params.id;
-        const title = req.body.title;
-        const text = req.body.text;
-        const date = req.body.date;
+        const title = req?.body?.title;
+        const text = req?.body?.text;
+        const date = req?.body?.date;
+        const done = req.body.done;
 
+        if(!text){
+            console.log(done)
+            const note = await Note.findByIdAndUpdate(id,{$set:{
+                    done
+                }},{new: true});
+            res.status(201).json(note);
+            return
+        }
         const note = await Note.findByIdAndUpdate(id,{$set:{
             title,
             text,
-            date
+            date,
+            done
         }},{new: true});
 
         res.status(201).json(note);

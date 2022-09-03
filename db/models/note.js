@@ -12,6 +12,9 @@ const NoteSchema = new mongoose.Schema({
     date: {
         type: Date,
         required: true,
+    },
+    done:{
+        type: Boolean,
     }
 });
 
