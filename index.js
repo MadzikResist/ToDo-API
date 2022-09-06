@@ -4,6 +4,7 @@ const {port} = require('./config')
 const apiRouter = require('./routes/api');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const jwt = require('jsonwebtoken')
 //db
 require('./db/mongoose');
 
@@ -16,6 +17,7 @@ app.use(cors());
 
 //routes
 app.use('/api', apiRouter);
+
 
 
 

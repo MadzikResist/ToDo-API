@@ -6,10 +6,12 @@ class NoteActions  {
        const text = req.body.text;
        const date = req.body.date;
        const done = req.body.done;
-
+       const token = req.headers['x-access-token']
        let note;
        try{
-           note = new Note({title, text, date, done});
+           const decoded = jwt.verify(token, 'secret123')
+           const userId = decoded.userId
+           note = new Note({title, text, date, done, userId});
            await note.save();
        } catch (err) {
            return res.status(422).json({message: err.message});
@@ -28,8 +30,12 @@ class NoteActions  {
        //  } catch(err){
        //     return res.status(500).json({message: err.message});
        //  }
-        const doc = await Note.find({}).sort({date:1});
+        const token = req.headers['x-access-token']
+        const decoded = jwt.verify(token, 'secret123')
+        const userId = decoded.userId
+        const doc = await Note.find({userId}).sort({date:1});
         res.status(201).json(doc);
+
     }
 
     //aktualizowanie notatki

@@ -15,6 +15,10 @@ const NoteSchema = new mongoose.Schema({
     },
     done:{
         type: Boolean,
+    },
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true
     }
 });
 
