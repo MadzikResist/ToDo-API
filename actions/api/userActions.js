@@ -28,9 +28,6 @@ module.exports = {
             res.status(500).send({message:'Incorrect e-mail or password', user: false})
         }
 
-
-
-
     },
 
 }
