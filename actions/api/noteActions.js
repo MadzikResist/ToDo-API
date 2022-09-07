@@ -1,7 +1,9 @@
 const Note = require('../../db/models/note');
+const jwt = require("jsonwebtoken");
 
 class NoteActions  {
    async saveNote(req, res){
+       console.log(req.body)
        const title = req.body.title;
        const text = req.body.text;
        const date = req.body.date;
@@ -10,14 +12,12 @@ class NoteActions  {
        let note;
        try{
            const decoded = jwt.verify(token, 'secret123')
-           const userId = decoded.userId
+           const userId = decoded._id
            note = new Note({title, text, date, done, userId});
            await note.save();
        } catch (err) {
            return res.status(422).json({message: err.message});
        }
-
-
        res.status(200).json(note);
    }
 
@@ -32,7 +32,7 @@ class NoteActions  {
        //  }
         const token = req.headers['x-access-token']
         const decoded = jwt.verify(token, 'secret123')
-        const userId = decoded.userId
+        const userId = decoded._id
         const doc = await Note.find({userId}).sort({date:1});
         res.status(201).json(doc);
 

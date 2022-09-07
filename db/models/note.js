@@ -20,6 +20,8 @@ const NoteSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true
     }
+},{
+    timestamps: true
 });
 
 const Note = mongoose.model('Note', NoteSchema)

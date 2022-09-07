@@ -3,28 +3,34 @@ const jwt = require('jsonwebtoken')
 
 module.exports = {
     async registerUser(req, res) {
-        const email = req.body.email;
-        const password = req.body.password;
-        let user;
         try {
+            const email = req.body.email;
+            const password = req.body.password;
+            let user;
             user = await User.create({email, password});
-             res.json({status: 'ok'})
-        } catch (err){
-            console.log(err);
-            res.json({status: 'error', error: 'Duplicate email'})
+            const token = jwt.sign({
+                _id: user._id
+            }, 'secret123')
+            res.json({status: 'ok', user: token})
+        } catch (error){
+            console.log(error);
+            res.status(500).send({message:'Incorrect e-mail or password'})
         }
     },
     async loginUser(req, res) {
-            const user = await User.findOne({email:req.body.email, password:req.body.password});
-            if(user){
+        try{
+            const user = await User.findOne({email:req.body.email});
                 const token = jwt.sign({
-                    email: req.body.email
+                    _id: user._id
                 }, 'secret123')
-                return res.json({status: 'ok', user: token})
-            }
-            else{
-                return res.json({status:'error', user: false})
-            }
+                res.json({status: 'ok', user: token})
+        }catch (error){
+            res.status(500).send({message:'Incorrect e-mail or password', user: false})
+        }
+
+
+
+
     },
 
 }
